@@ -20,18 +20,25 @@ async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text(f'Hello {update.effective_user.first_name}')
+    await update.message.reply_text(f'Start {update.effective_user.first_name}')
 
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text(update.message.text)
+    messege = update.message.text.lower()
+
+    if 'привіт' in messege:
+        reply_text = f'Привіт {update.effective_user.first_name} !'
+    else:
+        reply_text = 'Я тебе не розумію, чел'
+
+    await update.message.reply_text(reply_text)
 
 
 app = ApplicationBuilder().token(TELEGRAM_TOKEN_BOT).build()
 
 app.add_handler(CommandHandler("hello", hello))
 app.add_handler(CommandHandler("start", start))
-app.add_handler(MessageHandler(filters.TEXT, echo))
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
 
 app.run_polling()
